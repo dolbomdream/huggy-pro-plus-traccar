@@ -112,6 +112,8 @@ package_other () {
   cd out
   zip -q -r ../traccar-other-$VERSION.zip *
   cd ..
+  pwd
+  ls -al
   rm out/README.txt
   ok "Created Zip archive"
 }

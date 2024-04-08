@@ -50,7 +50,7 @@ jobs:
           wget -q https://github.com/adoptium/temurin21-binaries/releases/download/jdk-21.0.2+13/OpenJDK21U-jdk_x64_windows_hotspot_21.0.2_13.zip
           wget -q https://github.com/adoptium/temurin21-binaries/releases/download/jdk-21.0.2+13/OpenJDK21U-jdk_x64_linux_hotspot_21.0.2_13.tar.gz
           wget -q https://github.com/adoptium/temurin21-binaries/releases/download/jdk-21.0.2+13/OpenJDK21U-jdk_aarch64_linux_hotspot_21.0.2_13.tar.gz
-          ./package.sh ${{ github.event.inputs.version }}
+          ./package.sh ${{ github.event.inputs.version }} other
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
@@ -83,7 +83,8 @@ jobs:
         if: env.DOCKERHUB_IMAGE_TAGS != ''
         uses: docker/build-push-action@v4
         with:
-          build-args: TRACCAR_VERSION=${{ env.DOCKERHUB_IMAGE_PLATFORMS }}
+          context: .
+          build-args: TRACCAR_VERSION=${{ github.event.inputs.version }}
           file: custom/docker/Dockerfile.${{ matrix.os }}
           tags: ${{ env.DOCKERHUB_IMAGE_TAGS }}
           platforms: ${{ env.DOCKERHUB_IMAGE_PLATFORMS }}

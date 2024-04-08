@@ -1,5 +1,8 @@
 name: Build Installers
 
+env:
+  DOCKERHUB_REPOSITORY: dbdream.azurecr.io/dbdream/huggy-pro-plus-traccar
+
 on:
   workflow_dispatch:
     inputs:
@@ -11,7 +14,10 @@ on:
 jobs:
   build:
     runs-on: ubuntu-22.04
-
+    strategy:
+      matrix:
+        os: [alpine]
+        # os: [alpine, debian, ubuntu]
     steps:
       - uses: actions/checkout@v4
         with:
@@ -45,9 +51,40 @@ jobs:
           wget -q https://github.com/adoptium/temurin21-binaries/releases/download/jdk-21.0.2+13/OpenJDK21U-jdk_x64_linux_hotspot_21.0.2_13.tar.gz
           wget -q https://github.com/adoptium/temurin21-binaries/releases/download/jdk-21.0.2+13/OpenJDK21U-jdk_aarch64_linux_hotspot_21.0.2_13.tar.gz
           ./package.sh ${{ github.event.inputs.version }}
-      # - name: Upload installers
-      #   working-directory: ./setup
-      #   env:
-      #     S3_ACCESS_KEY: ${{ secrets.S3_ACCESS_KEY }}
-      #     S3_SECRET_KEY: ${{ secrets.S3_SECRET_KEY }}
-      #   run: s3cmd --acl-public put traccar-*.zip s3://traccar/builds/ --host=nyc3.digitaloceanspaces.com --host-bucket=traccar --access_key="$S3_ACCESS_KEY" --secret_key="$S3_SECRET_KEY"
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Docker Login
+        uses: azure/docker-login@v1
+        with:
+          login-server: ${{ secrets.AZURE_URL }}
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
+
+      - name: Set environment DOCKERHUB_IMAGE_TAGS on master
+        if: github.ref == 'refs/heads/master' && matrix.os == 'alpine'
+        run: echo "DOCKERHUB_IMAGE_TAGS=$DOCKERHUB_REPOSITORY:latest" >> $GITHUB_ENV
+
+      - name: Set environment DOCKERHUB_IMAGE_PLATFORMS
+        run: |
+          _DOCKERHUB_IMAGE_PLATFORMS="linux/amd64"
+          if [ "${{ matrix.os }}" == "debian" ]; then
+            _DOCKERHUB_IMAGE_PLATFORMS+=",linux/arm64"
+          elif [ "${{ matrix.os }}" == "ubuntu" ]; then
+            _DOCKERHUB_IMAGE_PLATFORMS+=",linux/arm/v7,linux/arm64"
+          fi
+          echo "DOCKERHUB_IMAGE_PLATFORMS=$_DOCKERHUB_IMAGE_PLATFORMS" >> $GITHUB_ENV
+
+      - name: Build and push
+        if: env.DOCKERHUB_IMAGE_TAGS != ''
+        uses: custom/docker/build-push-action@v4
+        with:
+          build-args: TRACCAR_VERSION=${{ env.DOCKERHUB_IMAGE_PLATFORMS }}
+          file: Dockerfile.${{ matrix.os }}
+          tags: ${{ env.DOCKERHUB_IMAGE_TAGS }}
+          platforms: ${{ env.DOCKERHUB_IMAGE_PLATFORMS }}
+          push: true

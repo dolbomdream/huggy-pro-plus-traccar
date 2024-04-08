@@ -5,7 +5,7 @@ ENV TRACCAR_VERSION=${TRACCAR_VERSION}
 
 WORKDIR /opt/traccar
 
-COPY ./out/traccar-other-$TRACCAR_VERSION.zip /tmp/traccar.zip
+COPY ./setup/traccar-other-$TRACCAR_VERSION.zip /tmp/traccar.zip
 
 RUN set -ex && \
     apk add --no-cache --no-progress openjdk11-jre-headless wget && \

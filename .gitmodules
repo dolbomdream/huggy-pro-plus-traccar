@@ -3,3 +3,5 @@
 	url = ../traccar-web.git
 	branch = master
 	ignore = all
+[submodule "https://github.com/traccar/traccar-web"]
+	url = https://github.com/dolbomdream/huggy-pro-plus-traccar-web

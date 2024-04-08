@@ -1,5 +1,5 @@
-[submodule "traccar-web"]
-	path = traccar-web
+[submodule "huggy-pro-plus-traccar-web"]
+	path = huggy-pro-plus-traccar-web
 	url = ../huggy-pro-plus-traccar-web.git
 	branch = master
 	ignore = all

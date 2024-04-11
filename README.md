@@ -28,9 +28,20 @@ traccar에서 참고 코드:
    mkdir -p /opt/traccar/logs
    ```
 
+1. **get access Azure Container Registry(acr)**
+
+   azure cli(az) 미 설치시 [az install](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli)
+
+   ```
+   az login
+   az acr login --name dbdream
+   ```
+
 1. **Get default traccar.xml:** 돌봄드림 Azure Container Registry(acr)접근 권한 필요
 
    ```bash
+   docker pull dbdream.azurecr.io/dbdream/huggy-pro-plus-traccar:latest
+
    docker run \
    --rm \
    --entrypoint cat \

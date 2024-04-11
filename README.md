@@ -2,18 +2,59 @@
 
 ## Overview
 
-Traccar is an open source GPS tracking system. This repository contains Java-based back-end service. It supports more than 200 GPS protocols and more than 2000 models of GPS tracking devices. Traccar can be used with any major SQL database system. It also provides easy to use [REST API](https://www.traccar.org/traccar-api/)..
+[Traccar web app](https://github.com/traccar/traccar-web)를 기반으로 custom해서 만든 돌봄드림 GPS 위치 서비스.
 
-Other parts of Traccar solution include:
+traccar에서 참고 코드:
 
+- [Traccar](https://github.com/traccar/traccar)
+- [Traccar docker](https://github.com/traccar/traccar-docker)
 - [Traccar web app](https://github.com/traccar/traccar-web)
 - [Traccar Manager Android app](https://github.com/traccar/traccar-manager-android)
 - [Traccar Manager iOS app](https://github.com/traccar/traccar-manager-ios)
-
-There is also a set of mobile apps that you can use for tracking mobile devices:
-
 - [Traccar Client Android app](https://github.com/traccar/traccar-client-android)
 - [Traccar Client iOS app](https://github.com/traccar/traccar-client-ios)
+
+## 커스텀 내용
+
+1. [Traccar docker](https://github.com/traccar/traccar-docker)코드를 custom/docker안으로 옮기면서 코드 수정
+1. Github Actions 내용 수정: .github/workflows/release.yml에서 도커 이미지를 acr로 push
+1. traccar web 수정(로고, 아이콘)
+
+## 사용법
+
+1. **Create work directories:**
+
+   ```bash
+   mkdir -p /opt/traccar/logs
+   ```
+
+1. **Get default traccar.xml:** 돌봄드림 Azure Container Registry(acr)접근 권한 필요
+
+   ```bash
+   docker run \
+   --rm \
+   --entrypoint cat \
+   dbdream.azurecr.io/dbdream/huggy-pro-plus-traccar:latest \
+   /opt/traccar/conf/traccar.xml > /opt/traccar/traccar.xml
+   ```
+
+1. **Edit traccar.xml:** <https://www.traccar.org/configuration-file/>
+
+   파일안에 mysql DB 접속정보 수정
+
+1. **Create container:**
+   ```bash
+   docker run \
+   --name traccar \
+   --hostname traccar \
+   --detach --restart unless-stopped \
+   --publish 80:8082 \
+   --publish 5000-5250:5000-5250 \
+   --publish 5000-5250:5000-5250/udp \
+   --volume /opt/traccar/logs:/opt/traccar/logs:rw \
+   --volume /opt/traccar/traccar.xml:/opt/traccar/conf/traccar.xml:ro \
+   dbdream.azurecr.io/dbdream/huggy-pro-plus-traccar:latest
+   ```
 
 ## Features
 
@@ -30,24 +71,3 @@ Some of the available features include:
 ## Build
 
 Please read [build from source documentation](https://www.traccar.org/build/) on the official website.
-
-## Team
-
-- Anton Tananaev ([anton@traccar.org](mailto:anton@traccar.org))
-- Andrey Kunitsyn ([andrey@traccar.org](mailto:andrey@traccar.org))
-
-## License
-
-    Apache License, Version 2.0
-
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
-
-        http://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.

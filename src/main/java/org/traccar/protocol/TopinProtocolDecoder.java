@@ -251,10 +251,20 @@ public class TopinProtocolDecoder extends BaseProtocolDecoder {
             int cellCount = buf.readUnsignedByte();
             int mcc = buf.readUnsignedShort();
             int mnc = buf.readUnsignedByte();
+            if (type == MSG_WIFI || type == MSG_WIFI_OFFLINE){ // 0x17, 0x69
             for (int i = 0; i < cellCount; i++) {
                 network.addCellTower(CellTower.from(
                         mcc, mnc, buf.readUnsignedShort(), buf.readUnsignedShort(), buf.readUnsignedByte()));
             }
+            }else if (type == MSG_LBS_WIFI 
+                || type == MSG_LBS_WIFI_OFFLINE 
+                || type == MSG_LBS_WIFI_2){ //0x18, 0x19, 0x1A
+                for (int i = 0; i < cellCount; i++) {
+                    network.addCellTower(CellTower.from(
+                            mcc, mnc, (buf.readUnsignedShort() << 16) | buf.readUnsignedShort(),  (buf.readUnsignedShort() << 16) | buf.readUnsignedShort(), buf.readUnsignedByte()));
+                }
+            }
+            
 
             if (buf.readableBytes() > 2) {
                 position.set(Position.KEY_ALARM, decodeAlarm(buf.readUnsignedByte()));

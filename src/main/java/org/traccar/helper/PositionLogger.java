@@ -24,10 +24,10 @@ import org.traccar.config.Keys;
 import org.traccar.model.Device;
 import org.traccar.model.Position;
 import org.traccar.session.cache.CacheManager;
-import java.util.Collection;
-import org.traccar.model.Network;
-import org.traccar.model.WifiAccessPoint;
-import org.traccar.model.CellTower;
+// import java.util.Collection;
+// import org.traccar.model.Network;
+// import org.traccar.model.WifiAccessPoint;
+// import org.traccar.model.CellTower;
 
 import java.util.Arrays;
 import java.util.LinkedHashSet;
@@ -46,45 +46,51 @@ public class PositionLogger {
         logAttributes.addAll(Arrays.asList(config.getString(Keys.LOGGER_ATTRIBUTES).split("[, ]")));
     }
 
-    public void networkLog(ChannelHandlerContext context, Position position) {
+    // public void networkLog(ChannelHandlerContext context, Position position) {
 
-        Network network = position.getNetwork();
-        StringBuilder builder = new StringBuilder();
-        builder.append("[").append(NetworkUtil.session(context.channel())).append("] ");
-        builder.append("MCC: ").append(network.getHomeMobileCountryCode()).append(" ");
-        builder.append("MNC: ").append(network.getHomeMobileNetworkCode()).append(" ");
-        builder.append("ConsiderIp: ").append(network.getConsiderIp()).append(" ");
+    // Network network = position.getNetwork();
+    // StringBuilder builder = new StringBuilder();
+    // builder.append("[").append(NetworkUtil.session(context.channel())).append("]
+    // ");
+    // builder.append("MCC: ").append(network.getHomeMobileCountryCode()).append("
+    // ");
+    // builder.append("MNC: ").append(network.getHomeMobileNetworkCode()).append("
+    // ");
+    // builder.append("ConsiderIp: ").append(network.getConsiderIp()).append(" ");
 
-        Collection<CellTower> cellTowers = network.getCellTowers();
+    // Collection<CellTower> cellTowers = network.getCellTowers();
 
-        builder.append("CellTower: [");
-        if (cellTowers != null) {
-            for (CellTower tower : cellTowers) {
-                builder.append("{");
-                builder.append("CellId: ").append(tower.getCellId()).append(" ");
-                builder.append("LocationAreaCode: ").append(tower.getLocationAreaCode()).append(" ");
-                builder.append("SignalStrength: ").append(tower.getSignalStrength()).append(" ");
-                builder.append("}");
-            }
-        }
-        builder.append("] ");
+    // builder.append("CellTower: [");
+    // if (cellTowers != null) {
+    // for (CellTower tower : cellTowers) {
+    // builder.append("{");
+    // builder.append("CellId: ").append(tower.getCellId()).append(" ");
+    // builder.append("LocationAreaCode:
+    // ").append(tower.getLocationAreaCode()).append(" ");
+    // builder.append("SignalStrength: ").append(tower.getSignalStrength()).append("
+    // ");
+    // builder.append("}");
+    // }
+    // }
+    // builder.append("] ");
 
-        Collection<WifiAccessPoint> wifiAccessPoints = network.getWifiAccessPoints();
-        builder.append("WifiAccessPoint: [");
-        if (wifiAccessPoints != null) {
-            for (WifiAccessPoint wifi : wifiAccessPoints) {
-                builder.append("{");
-                builder.append("macAddress: ").append(wifi.getMacAddress()).append(" ");
-                builder.append("signalStrength: ").append(wifi.getSignalStrength()).append(" ");
-                builder.append("}");
-            }
-        }
-        builder.append("] ");
-        LOGGER.info(builder.toString());
-    }
+    // Collection<WifiAccessPoint> wifiAccessPoints = network.getWifiAccessPoints();
+    // builder.append("WifiAccessPoint: [");
+    // if (wifiAccessPoints != null) {
+    // for (WifiAccessPoint wifi : wifiAccessPoints) {
+    // builder.append("{");
+    // builder.append("macAddress: ").append(wifi.getMacAddress()).append(" ");
+    // builder.append("signalStrength: ").append(wifi.getSignalStrength()).append("
+    // ");
+    // builder.append("}");
+    // }
+    // }
+    // builder.append("] ");
+    // LOGGER.info(builder.toString());
+    // }
 
     public void log(ChannelHandlerContext context, Position position) {
-        networkLog(context, position);
+        // networkLog(context, position);
         Device device = cacheManager.getObject(Device.class, position.getDeviceId());
 
         StringBuilder builder = new StringBuilder();

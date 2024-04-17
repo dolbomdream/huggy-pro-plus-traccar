@@ -46,8 +46,8 @@ public class PositionLogger {
         logAttributes.addAll(Arrays.asList(config.getString(Keys.LOGGER_ATTRIBUTES).split("[, ]")));
     }
 
-    public void networkLog(ChannelHandlerContext context, Position position){
-        
+    public void networkLog(ChannelHandlerContext context, Position position) {
+
         Network network = position.getNetwork();
         StringBuilder builder = new StringBuilder();
         builder.append("[").append(NetworkUtil.session(context.channel())).append("] ");
@@ -55,7 +55,7 @@ public class PositionLogger {
         builder.append("MNC: ").append(network.getHomeMobileNetworkCode()).append(" ");
         builder.append("ConsiderIp: ").append(network.getConsiderIp()).append(" ");
 
-        Collection<CellTower> cellTowers =network.getCellTowers();
+        Collection<CellTower> cellTowers = network.getCellTowers();
 
         builder.append("CellTower: [");
         if (cellTowers != null) {
@@ -69,7 +69,7 @@ public class PositionLogger {
         }
         builder.append("] ");
 
-        Collection<WifiAccessPoint> wifiAccessPoints =network.getWifiAccessPoints();
+        Collection<WifiAccessPoint> wifiAccessPoints = network.getWifiAccessPoints();
         builder.append("WifiAccessPoint: [");
         if (wifiAccessPoints != null) {
             for (WifiAccessPoint wifi : wifiAccessPoints) {

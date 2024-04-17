@@ -16,6 +16,8 @@
 package org.traccar.geolocation;
 
 import org.traccar.model.Network;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import jakarta.json.JsonObject;
 import jakarta.ws.rs.client.Client;
@@ -23,6 +25,7 @@ import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.client.InvocationCallback;
 
 public class UniversalGeolocationProvider implements GeolocationProvider {
+    private static final Logger LOGGER = LoggerFactory.getLogger(UniversalGeolocationProvider.class);
 
     private final Client client;
     private final String url;
@@ -41,6 +44,11 @@ public class UniversalGeolocationProvider implements GeolocationProvider {
                     callback.onFailure(new GeolocationException(json.getJsonObject("error").getString("message")));
                 } else {
                     JsonObject location = json.getJsonObject("location");
+                    StringBuilder builder = new StringBuilder();
+                    builder.append("lat: ").append(location.getJsonNumber("lat").doubleValue()).append(", ");
+                    builder.append("lng: ").append(location.getJsonNumber("lng").doubleValue()).append(", ");
+                    builder.append("accuracy: ").append(json.getJsonNumber("accuracy").doubleValue()).append("");
+                    LOGGER.info(builder.toString());
                     callback.onSuccess(
                             location.getJsonNumber("lat").doubleValue(),
                             location.getJsonNumber("lng").doubleValue(),

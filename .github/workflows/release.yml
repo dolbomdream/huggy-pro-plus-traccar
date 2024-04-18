@@ -75,7 +75,7 @@ jobs:
           if [ "${{ matrix.os }}" == "ubuntu" ]; then
             _DOCKERHUB_IMAGE_PLATFORMS+=",linux/arm/v7"
           fi
-          echo "DOCKERHUB_IMAGE_PLATFORMS=$_DOCKERHUB_IMAGE_PLATFORMS" >>
+          echo "DOCKERHUB_IMAGE_PLATFORMS=$_DOCKERHUB_IMAGE_PLATFORMS" >> $GITHUB_ENV
 
       - name: Build and push
         if: env.DOCKERHUB_IMAGE_TAGS != ''

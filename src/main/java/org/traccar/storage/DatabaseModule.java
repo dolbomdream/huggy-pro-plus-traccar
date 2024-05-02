@@ -71,6 +71,7 @@ public class DatabaseModule extends AbstractModule {
         hikariConfig.setConnectionInitSql(config.getString(Keys.DATABASE_CHECK_CONNECTION));
         hikariConfig.setIdleTimeout(600000);
         hikariConfig.setMaxLifetime(600000);
+        hikariConfig.setKeepaliveTime(550000);
 
         int maxPoolSize = config.getInteger(Keys.DATABASE_MAX_POOL_SIZE);
         if (maxPoolSize != 0) {

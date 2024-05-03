@@ -240,7 +240,7 @@ public class TopinProtocolDecoder extends BaseProtocolDecoder {
             getLastLocation(position, dateBuilder.getDate());
 
             Network network = new Network();
-            network.setConsiderIp(true);
+            // network.setConsiderIp(true);
             for (int i = 0; i < length; i++) {
                 String mac = String.format("%02x:%02x:%02x:%02x:%02x:%02x",
                         buf.readUnsignedByte(), buf.readUnsignedByte(), buf.readUnsignedByte(),

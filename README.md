@@ -28,6 +28,12 @@ traccar에서 참고 코드:
    mkdir -p /opt/traccar/logs
    ```
 
+1. **Download mysql ssl cert file**
+
+   ```bash
+   wget https://dl.cacerts.digicert.com/DigiCertGlobalRootCA.crt.pem -P /opt/traccar
+   ```
+
 1. **get access Azure Container Registry(acr)**
 
    azure cli(az) 미 설치시 [az install](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli)
@@ -51,7 +57,19 @@ traccar에서 참고 코드:
 
 1. **Edit traccar.xml:** <https://www.traccar.org/configuration-file/>
 
-   파일안에 mysql DB 접속정보 수정
+   파일안에 mysql DB 접속정보 수정 (useSSL, sslrootcert는 traccar example 문서와 다름.)
+
+   ```xml
+      <entry key='database.driver'>com.mysql.cj.jdbc.Driver</entry>
+      <entry key='database.url'>jdbc:mysql://{HOST}:{PORT}/{DB}?zeroDateTimeBehavior=round&amp;serverTimezone=UTC&amp;allowPublicKeyRetrieval=true&amp;useSSL=true&amp;sslrootcert=/opt/traccar/conf/DigiCertGlobalRootCA.crt.pem&amp;allowMultiQueries=true&amp;autoReconnect=true&amp;useUnicode=yes&amp;characterEncoding=UTF-8&amp;sessionVariables=sql_mode=''</entry>
+      <entry key='database.user'>{USER}</entry>
+      <entry key='database.password'>{PASSWORD}</entry>
+
+      <entry key='geolocation.enable'>true</entry>
+      <entry key='geolocation.type'>google</entry>
+      <entry key='geolocation.key'>{GOOGLE API KEY}</entry>
+
+   ```
 
 1. **Create container:**
    ```bash
@@ -64,6 +82,7 @@ traccar에서 참고 코드:
    --publish 5000-5250:5000-5250/udp \
    --volume /opt/traccar/logs:/opt/traccar/logs:rw \
    --volume /opt/traccar/traccar.xml:/opt/traccar/conf/traccar.xml:ro \
+   --volume /opt/traccar/DigiCertGlobalRootCA.crt.pem:/opt/traccar/conf/DigiCertGlobalRootCA.crt.pem:ro \
    dbdream.azurecr.io/dbdream/huggy-pro-plus-traccar:latest
    ```
 

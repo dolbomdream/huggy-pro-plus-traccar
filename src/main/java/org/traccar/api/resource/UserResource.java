@@ -44,6 +44,8 @@ import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 @Path("users")
 @Produces(MediaType.APPLICATION_JSON)
@@ -107,7 +109,13 @@ public class UserResource extends BaseObjectResource<User> {
                 UserUtil.setUserDefaults(entity, config);
             }
         }
-
+        Map<String, Object> attributes = new HashMap<>();
+        attributes.put("activeMapStyles", "googleRoad,googleSatellite,googleHybrid");
+        attributes.put("mapFollow", true);
+        attributes.put("mapLiveRoutes", "all");
+        attributes.put("positionItems", "fixTime,address,speed,totalDistance,deviceIdentifier,positionLatitude,positionLongitude,positionCourse,positionAltitude,positionAccuracy,positionValid,positionDeviceTime,positionServerTime,sharedGeofences,positionIndex,positionSat");
+        entity.setAttributes(attributes);
+        entity.setMap("googleHybrid");
         entity.setId(storage.addObject(entity, new Request(new Columns.Exclude("id"))));
         storage.updateObject(entity, new Request(
                 new Columns.Include("hashedPassword", "salt"),

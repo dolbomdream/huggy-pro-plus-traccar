@@ -113,7 +113,23 @@ public class UserResource extends BaseObjectResource<User> {
         attributes.put("activeMapStyles", "googleRoad,googleSatellite,googleHybrid");
         attributes.put("mapFollow", true);
         attributes.put("mapLiveRoutes", "all");
-        attributes.put("positionItems", "fixTime,address,speed,totalDistance,deviceIdentifier,positionLatitude,positionLongitude,positionCourse,positionAltitude,positionAccuracy,positionValid,positionDeviceTime,positionServerTime,sharedGeofences,positionIndex,positionSat");
+        String columns = "fixTime,"
+                + "address,"
+                + "speed,"
+                + "totalDistance,"
+                + "deviceIdentifier,"
+                + "positionLatitude,"
+                + "positionLongitude,"
+                + "positionCourse,"
+                + "positionAltitude,"
+                + "positionAccuracy,"
+                + "positionValid,"
+                + "positionDeviceTime,"
+                + "positionServerTime,"
+                + "sharedGeofences,"
+                + "positionIndex,"
+                + "positionSat";
+        attributes.put("positionItems", columns);
         entity.setAttributes(attributes);
         entity.setMap("googleHybrid");
         entity.setId(storage.addObject(entity, new Request(new Columns.Exclude("id"))));

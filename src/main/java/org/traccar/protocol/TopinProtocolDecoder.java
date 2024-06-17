@@ -23,7 +23,6 @@ import org.traccar.BaseProtocolDecoder;
 import org.traccar.session.DeviceSession;
 import org.traccar.NetworkMessage;
 import org.traccar.Protocol;
-import org.traccar.handler.network.StandardLoggingHandler;
 import org.traccar.helper.BcdUtil;
 import org.traccar.helper.BitUtil;
 import org.traccar.helper.DateBuilder;
@@ -32,16 +31,12 @@ import org.traccar.model.CellTower;
 import org.traccar.model.Network;
 import org.traccar.model.Position;
 import org.traccar.model.WifiAccessPoint;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.net.SocketAddress;
 import java.util.Calendar;
 import java.util.TimeZone;
 
 public class TopinProtocolDecoder extends BaseProtocolDecoder {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(StandardLoggingHandler.class);
 
     public TopinProtocolDecoder(Protocol protocol) {
         super(protocol);
@@ -126,8 +121,6 @@ public class TopinProtocolDecoder extends BaseProtocolDecoder {
         int length = buf.readUnsignedByte();
 
         int type = buf.readUnsignedByte();
-        LOGGER.info(ByteBufUtil.hexDump(buf));
-        LOGGER.info("protocol type: " + type);
 
         DeviceSession deviceSession;
         if (type == MSG_LOGIN) {
@@ -139,7 +132,6 @@ public class TopinProtocolDecoder extends BaseProtocolDecoder {
             updateTime(channel, MSG_TIME_UPDATE);
             return null;
         } else {
-
             deviceSession = getDeviceSession(channel, remoteAddress);
             if (deviceSession == null) {
                 return null;

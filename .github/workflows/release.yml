@@ -28,12 +28,12 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: 21
+          java-version: 18
           cache: gradle
       - run: ./gradlew build
       - uses: actions/setup-node@v4
         with:
-          node-version: 21
+          node-version: 18
           cache: npm
           cache-dependency-path: traccar-web/package-lock.json
       - run: npm ci && npm run build
